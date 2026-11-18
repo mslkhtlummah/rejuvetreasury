@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rejuve</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Poppins:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: dark forest canvas, pale-lime data panels like the infographic, orange reserved for priority. */
+:root{
+  --f950:#06271c; --f900:#0b3526; --f800:#114632; --f700:#17583f;
+  --olive:#2f4413; --lime:#e3ea2a; --leaf:#9cc61f; --pale:#dde66a; --pale2:#eef3a8;
+  --ptext:#0f3321; --orange:#f39a2b; --orange-soft:#fbc98a; --red:#c8191f;
+  --ink:#f4f7e0; --mute:#b9cba7; --line:rgba(227,234,42,.2); --card:rgba(255,255,255,.065);
+  --display:'Poppins',system-ui,sans-serif; --body:'DM Sans',system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background-color:var(--f950);background-image:linear-gradient(165deg,#06271c 0%,#0b3526 45%,#2c4212 100%);background-attachment:fixed;color:var(--ink);font:400 16px/1.55 var(--body);-webkit-text-size-adjust:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--f950);z-index:30}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;text-wrap:balance}
+h1{font-size:clamp(2.1rem,6vw,3.7rem);font-weight:800}
+h2{font-size:clamp(1.35rem,3vw,1.9rem);font-weight:700;color:var(--lime)}
+h3{font-size:1.05rem;font-weight:600}
+p{margin:0}
+a{color:inherit}
+.wrap{width:min(1120px,100%);margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+button{font:inherit;color:inherit}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:0;border-radius:999px;padding:.8rem 1.4rem;font:600 .95rem var(--display);cursor:pointer;text-decoration:none;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:var(--lime);color:var(--f950)}
+.btn.ghost{background:transparent;border:2px solid var(--line);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--lime)}
+.btn.small{padding:.45rem .9rem;font-size:.82rem}
+.btn.danger{background:transparent;border:2px solid rgba(200,25,31,.6);color:#ffb3b3}
+
+/* header */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(6,39,28,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hdr-in{display:flex;align-items:center;gap:1rem;padding-block:.7rem}
+.logo{display:flex;align-items:center;gap:.6rem;font:800 1.35rem var(--display);text-decoration:none;flex:none}
+.logo svg{width:38px;height:38px}
+.nav{display:flex;gap:.4rem;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none;padding-block:2px}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:none;display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;padding:.5rem .95rem;border-radius:999px;font:600 .86rem var(--display);border:1.5px solid var(--line);color:var(--ink);white-space:nowrap}
+.nav a svg{width:16px;height:16px}
+.nav a[aria-current="page"]{background:var(--lime);color:var(--f950);border-color:var(--lime)}
+.user{display:flex;align-items:center;gap:.5rem;flex:none}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--orange);color:var(--f950);display:grid;place-items:center;font:700 .95rem var(--display)}
+.user .nm{font-size:.88rem;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:900px){.hdr-in{flex-wrap:wrap}.nav{order:3;flex-basis:100%}.user .nm{display:none}.user{margin-left:auto}}
+
+/* generic blocks */
+main{padding-block:1.5rem 3rem}
+section.blk{margin-top:2.6rem}
+.blk>h2{margin-bottom:.4rem}
+.sub{color:var(--mute);max-width:62ch;margin-bottom:1.2rem}
+.grid{display:grid;gap:1rem}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.2rem;min-width:0}
+.pcard{background:var(--pale);color:var(--ptext);border-radius:18px;padding:1.2rem;min-width:0}
+.pcard h3{display:inline-block;background:var(--f800);color:var(--lime);padding:.3rem .9rem;border-radius:999px;margin:-.2rem 0 .9rem;font-size:.95rem}
+.src{font-size:.76rem;opacity:.75;margin-top:.8rem}
+.chip{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .7rem;border-radius:999px;font:600 .78rem var(--display);background:rgba(227,234,42,.15);color:var(--lime)}
+.chip.or{background:rgba(243,154,43,.18);color:var(--orange)}
+.chip.rd{background:rgba(200,25,31,.25);color:#ffb3b3}
+.tag{font:600 .72rem var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--leaf)}
+
+/* hero */
+.hero{position:relative;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:1rem;align-items:end;border-radius:26px;background:linear-gradient(135deg,rgba(23,88,63,.75),rgba(47,68,19,.8));border:1px solid var(--line);padding:clamp(1.2rem,4vw,2.4rem);overflow:hidden}
+.hero-copy{position:relative;z-index:2;display:grid;gap:1rem;align-content:start}
+.hero .lead{font-size:1.1rem;max-width:46ch;color:#e6efcf}
+.cta{display:flex;flex-wrap:wrap;gap:.6rem}
+.hero-art{position:relative;min-height:300px}
+.hero-art .farmer{position:absolute;right:0;bottom:-6px;width:min(300px,78%);z-index:2}
+.hero-art .p1{position:absolute;left:-10px;bottom:0;width:190px;opacity:.9}
+.hero-art .p2{position:absolute;right:-50px;bottom:0;width:230px;opacity:.55}
+@media(max-width:760px){.hero{grid-template-columns:minmax(0,1fr)}.hero-art{min-height:230px;order:-1}.hero-art .farmer{width:200px}.hero-art .p1{width:150px}}
+.status{display:grid;grid-template-columns:1fr 1fr;gap:1rem;background:rgba(6,39,28,.55);border:1px solid var(--line);border-radius:16px;padding:1rem}
+@media(max-width:520px){.status{grid-template-columns:1fr}}
+.status small{color:var(--mute);display:block}
+.big{font:800 clamp(1.7rem,4vw,2.3rem)/1.1 var(--display);color:var(--lime)}
+.bar{height:10px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;margin:.45rem 0}
+.bar>i{display:block;height:100%;background:var(--lime);border-radius:99px;transition:width .4s}
+
+/* stats */
+.stat{background:var(--pale);color:var(--ptext);border-radius:16px;padding:1rem 1.1rem}
+.stat b{display:block;font:800 clamp(1.5rem,3.4vw,2rem)/1.1 var(--display)}
+.stat span{font-size:.88rem;display:block;margin-top:.3rem}
+.stat.hot{background:var(--orange)}
+.stat em{font-style:normal;font-size:.72rem;opacity:.7;display:block;margin-top:.4rem}
+
+/* bars lists */
+.rows{display:grid;gap:.45rem}
+.row{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:.6rem;font-size:.9rem}
+.row .tr{height:26px;border-radius:99px;background:rgba(15,51,33,.14);position:relative;overflow:hidden}
+.row .tr i{position:absolute;inset:0 auto 0 0;background:var(--f800);border-radius:99px}
+.row .tr b{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:700 .8rem var(--display);color:#fff;mix-blend-mode:normal}
+.row.me .tr i{background:var(--red)}
+.row.me{font-weight:700}
+.minihead{font:600 .8rem var(--display);margin:.2rem 0 .5rem}
+
+.donutwrap{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.donut{width:150px;height:150px;flex:none}
+.legend{display:grid;gap:.4rem;font-size:.88rem}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:.45rem;vertical-align:-1px}
+.funnel{display:grid;gap:.5rem}
+.funnel .f{border-radius:8px;padding:.45rem .7rem;color:#fff;font:600 .82rem var(--display);display:flex;justify-content:space-between;gap:.6rem;min-width:0}
+.down{display:flex;align-items:center;gap:.8rem}
+.down svg{width:54px;height:60px;flex:none}
+
+/* feature cards */
+.feat{display:grid;gap:.5rem;text-decoration:none;transition:transform .15s,border-color .15s}
+.feat:hover{transform:translateY(-3px);border-color:var(--lime)}
+.feat .ic{width:44px;height:44px;border-radius:12px;background:var(--lime);color:var(--f950);display:grid;place-items:center}
+.feat .ic svg{width:24px;height:24px}
+.feat p{color:var(--mute);font-size:.92rem}
+.steps3{counter-reset:s;display:grid;gap:.8rem}
+.steps3 li{list-style:none;display:grid;grid-template-columns:auto 1fr;gap:.8rem}
+.steps3 li::before{counter-increment:s;content:counter(s);width:34px;height:34px;border-radius:50%;background:var(--orange);color:var(--f950);display:grid;place-items:center;font:700 .95rem var(--display)}
+.steps3{padding:0;margin:0}
+
+/* forms */
+.form{display:grid;gap:.9rem}
+.fld{display:grid;gap:.3rem}
+.fld>span{font:600 .84rem var(--display);color:var(--lime)}
+.fld small{color:var(--mute);font-size:.78rem}
+input[type=number],input[type=text],select{width:100%;background:rgba(0,0,0,.28);border:1.5px solid var(--line);border-radius:12px;padding:.65rem .8rem;color:var(--ink);font:500 1rem var(--body)}
+select option{background:var(--f900);color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--lime)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+@media(max-width:520px){.two{grid-template-columns:1fr}}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.2rem;align-items:start}
+@media(max-width:860px){.split{grid-template-columns:minmax(0,1fr)}}
+.sticky{position:sticky;top:calc(env(safe-area-inset-top,0px) + 120px)}
+@media(max-width:860px){.sticky{position:static}}
+.ring{width:150px;height:150px;flex:none}
+.ring text{font:800 34px var(--display);fill:var(--ink)}
+.resbox{display:flex;gap:1.1rem;align-items:center;flex-wrap:wrap}
+.todo{display:grid;gap:.45rem;padding:0;margin:.6rem 0 0;list-style:none}
+.todo li{display:flex;gap:.6rem;font-size:.92rem}
+.todo li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--orange);margin-top:.5rem;flex:none}
+.note{font-size:.8rem;color:var(--mute);margin-top:.8rem}
+.break{display:grid;gap:.6rem;margin-top:1rem}
+.break .l{display:flex;justify-content:space-between;font-size:.85rem}
+
+/* checklist */
+.chk{display:grid;gap:.5rem;margin:0;padding:0;list-style:none}
+.chk label{display:grid;grid-template-columns:auto 1fr;gap:.7rem;align-items:start;padding:.7rem .8rem;border-radius:12px;background:rgba(0,0,0,.2);border:1px solid transparent;cursor:pointer}
+.chk label:hover{border-color:var(--line)}
+.chk input{width:20px;height:20px;margin-top:2px;accent-color:var(--lime)}
+.chk b{display:block;font-weight:700}
+.chk small{color:var(--mute)}
+.chk label.done b{text-decoration:line-through;opacity:.65}
+.phase{margin-top:1.2rem}
+.phase h3{display:flex;gap:.6rem;align-items:center;margin-bottom:.6rem}
+.phases{display:flex;gap:.4rem;flex-wrap:wrap}
+
+/* map + table */
+.mapbox{background:linear-gradient(160deg,#0e4330,#133a22);border:1px solid var(--line);border-radius:18px;padding:.6rem;min-width:0}
+.mapbox svg{display:block;width:100%;height:auto}
+.land{fill:#1d5a3f;stroke:#2c7a55;stroke-width:1.2}
+.land.pri{fill:var(--orange);stroke:#ffd29a}
+.pin{cursor:pointer}
+.pin circle{fill:var(--red);stroke:#fff;stroke-width:2}
+.pin text{font:700 13px var(--display);fill:#fff;paint-order:stroke;stroke:#06271c;stroke-width:3px}
+.pin:focus-visible circle,.pin.on circle{fill:var(--lime);stroke:var(--f950)}
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}
+.tab{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:.45rem .9rem;font:600 .84rem var(--display);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--lime);color:var(--f950);border-color:var(--lime)}
+.tab.o[aria-selected="true"]{background:var(--orange);border-color:var(--orange)}
+.tscroll{overflow-x:auto;border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.9rem}
+th,td{padding:.6rem .7rem;text-align:left;border-bottom:1px solid rgba(15,51,33,.15)}
+.pt th,.pt td{color:var(--ptext)}
+.pt thead th{font:700 .8rem var(--display)}
+.pt .c1{background:var(--orange-soft)}.pt thead .c1{background:var(--orange)}
+.pt .c2{background:#f6e7a8}.pt thead .c2{background:#f3d77a}
+.pt .c3{background:#fff}.pt thead .c3{background:#f3f3e6}
+.pt tr.tot td{background:var(--red);color:#fff;font-weight:700}
+.pt td:first-child,.pt th:first-child{background:var(--pale2);font-weight:600}
+.mini{display:grid;gap:.5rem}
+.mini .r{display:grid;grid-template-columns:110px 1fr auto;gap:.5rem;align-items:center;font-size:.82rem}
+.mini .tr{height:14px;border-radius:99px;background:rgba(15,51,33,.14);overflow:hidden}
+.mini .tr i{display:block;height:100%;border-radius:99px}
+
+/* chart */
+.chart{width:100%;height:auto;display:block}
+.chart .ax{fill:var(--mute);font:500 11px var(--body)}
+.chart .gl{stroke:rgba(255,255,255,.1);stroke-width:1}
+.chart .l1{stroke:var(--mute);stroke-width:2;stroke-dasharray:5 4;fill:none}
+.chart .l2{stroke:var(--lime);stroke-width:3;fill:none}
+.chart .wait{fill:rgba(243,154,43,.16)}
+.chart .lbl{fill:var(--orange);font:600 11px var(--display)}
+.chart .x{fill:var(--lime)}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin-top:1rem}
+.kpi{background:rgba(0,0,0,.22);border-radius:12px;padding:.7rem .8rem}
+.kpi small{color:var(--mute);display:block;font-size:.78rem}
+.kpi b{font:700 1.15rem var(--display)}
+.kpi.warn b{color:var(--orange)}
+
+/* koperasi */
+.members td,.members th{border-bottom:1px solid var(--line);color:var(--ink)}
+.members input,.members select{padding:.4rem .5rem;font-size:.9rem;border-radius:8px;min-width:70px}
+.members input[type=text]{min-width:140px}
+.sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin-bottom:1rem}
+@media(max-width:700px){.sum{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* login */
+.login{position:relative;min-height:100%;overflow:hidden;display:flex;align-items:center;background:radial-gradient(1000px 600px at 78% 8%,rgba(227,234,42,.28),transparent 60%),linear-gradient(165deg,#06271c,#0b3526 50%,#2c4212)}
+.login .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:1.5rem;align-items:center;padding-block:2rem}
+.lcard{background:rgba(6,39,28,.82);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:24px;padding:clamp(1.4rem,4vw,2.2rem);display:grid;gap:1.1rem;position:relative;z-index:3}
+.lcard .logo{font-size:1.9rem}
+.lcard .logo svg{width:50px;height:50px}
+.lcard p.lead{color:#dbe7c4}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:.7rem;width:100%;background:#fff;color:#1f2a24;border:0;border-radius:999px;padding:.85rem 1.2rem;font:600 1rem var(--display);cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.gbtn svg{width:22px;height:22px}
+.gbtn:hover{transform:translateY(-1px)}
+.sdg{display:flex;gap:.5rem;flex-wrap:wrap}
+.sdg span{display:flex;align-items:center;gap:.5rem;border-radius:8px;color:#fff;padding:.3rem .6rem;font:600 .7rem/1.15 var(--display)}
+.sdg b{font:800 1.4rem var(--display)}
+.scene{position:relative;height:min(640px,78vh);min-height:420px}
+.scene .farmer{position:absolute;right:2%;bottom:0;width:min(400px,62%);z-index:2}
+.scene .pa{position:absolute;bottom:-10px;z-index:1}
+.scene .hill{position:absolute;left:-10%;right:-10%;bottom:-70px;height:170px;z-index:2;pointer-events:none}
+.dialog{display:grid;gap:.8rem;margin-top:.3rem;padding-top:1rem;border-top:1px solid var(--line)}
+@media(max-width:860px){.login{align-items:flex-start}.login .wrap{grid-template-columns:minmax(0,1fr);gap:0;padding-block:0 1.5rem}.scene{order:-1;height:290px;min-height:0;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)))}.scene .farmer{width:210px}.lcard{margin-top:-30px}}
+footer{border-top:1px solid var(--line);padding-block:1.4rem 2.5rem;color:var(--mute);font-size:.8rem}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+[hidden]{display:none!important}
+img{max-width:100%}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const nf=new Intl.NumberFormat('id-ID',{maximumFractionDigits:2});
+const fmt=n=>nf.format(n);
+const rp=n=>'Rp'+new Intl.NumberFormat('id-ID',{maximumFractionDigits:0}).format(Math.round(n));
+const rpc=n=>{const a=Math.abs(n);const s=n<0?'-':'';if(a>=1e9)return s+'Rp'+fmt(a/1e9)+' miliar';if(a>=1e6)return s+'Rp'+fmt(a/1e6)+' juta';return s+rp(a)};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+
+/* ---------- state ---------- */
+const KEY='rejuve.v1';
+const defaults=()=>({user:null,dana:60,
+  k:{touched:false,prov:'Riau',luas:2,umur:27,prod:9,legal:'desa',hutan:'ragu',lemb:'belum'},
+  steps:{},bakar:{},
+  sim:{luas:2,prodNow:9,prodAfter:22,harga:3200,biaya:65,tbm:36,hidup:3,tumpang:0},
+  members:[{n:'Pak Slamet (contoh)',ha:2,umur:28,legal:'ya'},{n:'Bu Marni (contoh)',ha:1.5,umur:24,legal:'tidak'},{n:'Pak Jonas (contoh)',ha:3.5,umur:16,legal:'ya'}]});
+let S=(()=>{const d=defaults();try{const r=JSON.parse(localStorage.getItem(KEY)||'{}');return Object.assign(d,r,{k:Object.assign(d.k,r.k),sim:Object.assign(d.sim,r.sim)})}catch(e){return d}})();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+/* ---------- illustration ---------- */
+function palm(w,opts={}){
+  const cx=100,cy=80,L0=opts.len||84; let s='';
+  const dark=opts.dark;
+  s+=`<path d="M91 300 C93 230 97 150 ${cx-4} ${cy+6} L${cx+6} ${cy+6} C108 150 111 230 113 300 Z" fill="${dark?'#3d3416':'#6a5826'}"/>`;
+  for(let y=cy+24;y<292;y+=12){const k=6+(y-cy)*.03;s+=`<path d="M${cx-k} ${y} q${k} 4 ${2*k} 0" stroke="#2c250e" stroke-width="2" fill="none" opacity=".5"/>`}
+  const angs=[-178,-156,-134,-112,-90,-68,-46,-24,-2];
+  angs.forEach((deg,i)=>{
+    const a=deg*Math.PI/180,L=L0*(0.82+0.18*Math.abs(Math.cos(a)));
+    const dx=Math.cos(a),dy=Math.sin(a);
+    const P0=[cx,cy],C=[cx+dx*L*.55,cy+dy*L*.55-24],P1=[cx+dx*L,cy+dy*L+22];
+    const col=(i%2?(dark?'#2a6b30':'#3f9a3a'):(dark?'#215a2a':'#2f8a3a'));
+    s+=`<path d="M${P0} Q${C} ${P1}" stroke="#2c6a2a" stroke-width="2.6" fill="none"/>`;
+    for(let j=1;j<=11;j++){
+      const t=j/12,u=1-t;
+      const px=u*u*P0[0]+2*u*t*C[0]+t*t*P1[0],py=u*u*P0[1]+2*u*t*C[1]+t*t*P1[1];
+      let tx=2*u*(C[0]-P0[0])+2*t*(P1[0]-C[0]),ty=2*u*(C[1]-P0[1])+2*t*(P1[1]-C[1]);
+      const tl=Math.hypot(tx,ty);tx/=tl;ty/=tl;
+      const len=15*(Math.sin(Math.PI*t)*.7+.3);
+      [-1,1].forEach(sd=>{
+        let vx=tx*.55+(-ty)*sd*.9,vy=ty*.55+tx*sd*.9;const vl=Math.hypot(vx,vy);
+        s+=`<line x1="${px.toFixed(1)}" y1="${py.toFixed(1)}" x2="${(px+vx/vl*len).toFixed(1)}" y2="${(py+vy/vl*len+3).toFixed(1)}" stroke="${col}" stroke-width="2.4" stroke-linecap="round"/>`;
+      });
+    }
+  });
+  [[-9,10],[9,13],[0,19]].forEach(([x,y])=>{s+=`<ellipse cx="${cx+x}" cy="${cy+y}" rx="7.5" ry="9.5" fill="#d9541c" stroke="#8a2a0c" stroke-width="1.5"/><circle cx="${cx+x-2}" cy="${cy+y-3}" r="1.6" fill="#f6b04a"/><circle cx="${cx+x+2}" cy="${cy+y+3}" r="1.6" fill="#f6b04a"/>`});
+  return `<svg class="${opts.cls||''}" style="${opts.style||''}" viewBox="0 0 200 300" aria-hidden="true">${s}</svg>`;
+}
+function farmer(cls){
+  return `<svg class="${cls}" viewBox="0 0 300 380" role="img" aria-label="Ilustrasi petani sawit bertopi caping">
+  <path d="M30 380C30 300 66 262 118 252h64c52 10 88 48 88 128z" fill="#2f7a47"/>
+  <path d="M118 252l32 52 32-52z" fill="#1d5a33"/>
+  <path d="M74 330c40 18 112 18 152 0" stroke="#e3ea2a" stroke-width="5" fill="none" opacity=".75"/>
+  <rect x="130" y="218" width="40" height="44" rx="16" fill="#b87648"/>
+  <path d="M190 256c30 6 58 32 62 78l-34 6c-4-34-20-52-44-64z" fill="#f6f6ee"/>
+  <path d="M200 270l40 60M212 266l42 64" stroke="#d3cdb8" stroke-width="3"/>
+  <ellipse cx="150" cy="168" rx="46" ry="54" fill="#c98a58"/>
+  <ellipse cx="103" cy="174" rx="7" ry="12" fill="#b87648"/><ellipse cx="197" cy="174" rx="7" ry="12" fill="#b87648"/>
+  <path d="M104 134c14 14 78 14 92 0v14c-20 12-72 12-92 0z" fill="#8a5a36" opacity=".55"/>
+  <ellipse cx="132" cy="162" rx="4" ry="5.4" fill="#2a1a10"/><ellipse cx="168" cy="162" rx="4" ry="5.4" fill="#2a1a10"/>
+  <path d="M121 150q11-7 22 0M157 150q11-7 22 0" stroke="#2a1a10" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+  <path d="M150 166q-8 15 2 17" stroke="#9c6038" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M124 190q13-10 26-3q13-7 26 3q-13 10-26 6q-13 4-26-6z" fill="#2a1a10"/>
+  <path d="M136 205q14 10 28 0" stroke="#7a3b2a" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+  <ellipse cx="150" cy="124" rx="124" ry="23" fill="#e6c068"/>
+  <path d="M48 124Q150-12 252 124z" fill="#f2d57e"/>
+  <path d="M70 112Q150 6 230 112M92 112Q150 30 208 112M114 114Q150 56 186 114M150 28V122M112 36l16 86M188 36l-16 86" stroke="#c9a24a" stroke-width="2.2" fill="none" opacity=".75"/>
+  <path d="M60 122Q150 98 240 122" stroke="#7a4d1a" stroke-width="7" fill="none"/>
+  <path d="M104 136l8 66M196 136l-8 66" stroke="#7a4d1a" stroke-width="2.2" fill="none"/>
+  <path d="M30 124q120 40 240 0" stroke="#bf9a4a" stroke-width="2" fill="none" opacity=".8"/>
+</svg>`;
+}
+function logoSVG(){return `<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#e3ea2a"/><path d="M20 35V17" stroke="#0b3526" stroke-width="3" stroke-linecap="round"/><path d="M20 17C14 17 9 13 8 9c5 0 10 2 12 8zM20 17c6 0 11-4 12-8-5 0-10 2-12 8zM20 17C16 13 15 8 17 5c3 3 4 8 3 12zM20 17c4-4 5-9 3-12-3 3-4 8-3 12z" fill="#0b3526"/></svg>`}
+const GLOGO=`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.57-5.17 3.57-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"/></svg>`;
+const IC={
+ home:'M3 11l9-8 9 8M5 10v10h14V10',
+ clip:'M9 4h6v3H9zM6 6h12v15H6zM9 14l2 2 4-4',
+ track:'M4 19V5M4 19h16M8 15l4-5 3 3 5-7',
+ coin:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v10M9 10c0-2.4 6-2.4 6 0s-6 1.4-6 4 6 2.4 6 0',
+ map:'M9 4l6 2 6-2v14l-6 2-6-2-6 2V6zM9 4v14M15 6v14',
+ flame:'M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9zM4 4l16 16',
+ users:'M16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3 3-5 6-5s6 2 6 5M14 15c3 0 8 1 8 5'
+};
+const icon=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IC[n]}"/></svg>`;
+
+/* ---------- routes ---------- */
+const ROUTES=[
+ {id:'beranda',label:'Beranda',ic:'home',d:'Ringkasan data dan program PSR.'},
+ {id:'kelayakan',label:'Cek Kelayakan',ic:'clip',d:'Skor kesiapan dan perkiraan hibah untuk kebunmu.'},
+ {id:'pelacak',label:'Pelacak',ic:'track',d:'Dari rekomendasi teknis sampai panen perdana.'},
+ {id:'dana',label:'Simulasi Dana',ic:'coin',d:'Hitung kesenjangan selama masa tunggu panen.'},
+ {id:'peta',label:'Peta Prioritas',ic:'map',d:'Klaster provinsi hasil analisis K-Means.'},
+ {id:'tanpa-bakar',label:'Tanpa Bakar',ic:'flame',d:'Daftar periksa lahan untuk tanam kembali.'},
+ {id:'koperasi',label:'Koperasi',ic:'users',d:'Pantau anggota dan antrean pengajuan.'}
+];
+const STEPS=[
+ {p:0,t:'Gabung kelompok tani atau koperasi',d:'Pengajuan PSR dilakukan lewat kelembagaan pekebun.'},
+ {p:0,t:'Siapkan legalitas lahan',d:'Sertifikat atau bukti kepemilikan, serta STDB.'},
+ {p:0,t:'Pastikan lahan di luar kawasan hutan',d:'Cek tumpang tindih ke dinas perkebunan setempat.'},
+ {p:1,t:'Ajukan usulan ke dinas perkebunan',d:'Lewat kelompok tani atau koperasi.'},
+ {p:1,t:'Verifikasi dan rekomendasi teknis',d:'Kebun dinyatakan layak diremajakan.'},
+ {p:1,t:'Persetujuan dana dan penandatanganan',d:'Dana dicairkan bertahap sesuai ketentuan.'},
+ {p:2,t:'Tebang tanaman tua tanpa bakar',d:'Cacah atau tumpuk batang di lahan.'},
+ {p:2,t:'Tanam kembali dengan bibit unggul',d:'Simpan bukti asal dan sertifikat bibit.'},
+ {p:3,t:'Rawat tanaman belum menghasilkan',d:'Sekitar tiga tahun sebelum panen perdana.'},
+ {p:3,t:'Panen perdana',d:'Pantau produktivitas dibanding kebun lama.'}
+];
+const PHASES=['Persiapan','Pengajuan','Pelaksanaan','Panen'];
+const BAKAR=[
+ {g:'Sebelum tebang',i:[['Batas kebun jelas dan di luar kawasan hutan','Bawa peta dan dokumen ke dinas untuk dicek.'],['Dokumen legal siap','STDB dan bukti kepemilikan lahan.'],['Rencana pembersihan tanpa bakar disepakati','Seluruh anggota kelompok tahu aturannya.']]},
+ {g:'Saat tebang',i:[['Batang dicacah atau ditumpuk memanjang','Tidak dibakar. Biarkan lapuk jadi bahan organik.'],['Tidak ada api di sekitar lahan','Termasuk membakar sampah dan semak.'],['Muka air tanah dijaga bila lahan gambut','Jangan menambah parit tanpa arahan teknis.']]},
+ {g:'Setelah tebang',i:[['Tanaman penutup tanah ditanam','Menahan gulma dan menjaga tanah.'],['Bibit unggul bersertifikat','Simpan label dan nota pembelian.'],['Foto lahan sebelum dan sesudah','Berguna untuk laporan dan verifikasi.']]}
+];
+const PRIORITY=['Aceh','Riau','Jambi','Kalimantan Barat'];
+const PROVS=['Aceh','Sumatera Utara','Riau','Jambi','Sumatera Selatan','Bengkulu','Lampung','Kalimantan Barat','Kalimantan Tengah','Kalimantan Timur','Provinsi lain'];
+
+/* ---------- derived logic ---------- */
+function eligibility(k){
+  const luas=+k.luas||0,umur=+k.umur||0,prod=+k.prod||0;
+  const ageS=umur>=25?25:umur>=20?16:umur>=15?8:2;
+  const prodS=prod<10?15:prod<14?9:prod<18?4:0;
+  const legal={lengkap:20,desa:10,belum:0}[k.legal];
+  const hutan={tidak:15,ragu:7,ya:0}[k.hutan];
+  const lemb={ya:15,belum:3}[k.lemb];
+  const size=luas>0&&luas<=4?10:luas>4?6:0;
+  const need=ageS+prodS, ready=legal+hutan+lemb+size;
+  const total=need+ready;
+  const todo=[];
+  if(k.legal==='desa')todo.push('Tingkatkan surat desa menjadi sertifikat atau bukti kepemilikan yang diakui, dan urus STDB.');
+  if(k.legal==='belum')todo.push('Urus legalitas lahan lebih dulu: STDB dan bukti kepemilikan.');
+  if(k.hutan==='ragu')todo.push('Cek ke dinas perkebunan apakah lahan masuk kawasan hutan.');
+  if(k.hutan==='ya')todo.push('Lahan dalam kawasan hutan tidak bisa diajukan sampai statusnya jelas.');
+  if(k.lemb==='belum')todo.push('Bergabung ke kelompok tani atau koperasi, karena pengajuan lewat kelembagaan.');
+  if(luas>4)todo.push('Dana dihitung untuk maksimal 4 ha per pekebun. Sisanya bisa bertahap.');
+  if(need<22)todo.push('Kebun belum terlalu mendesak diremajakan. Tingkatkan perawatan dulu dan pantau produktivitas.');
+  const status=total>=75?['Siap diajukan','']:total>=50?['Perlu dilengkapi','or']:['Belum siap','rd'];
+  const hibah=Math.min(luas,4)*S.dana*1e6;
+  return {total,need,ready,todo,status,hibah};
+}
+function stageInfo(){
+  const done=STEPS.filter((s,i)=>S.steps[i]).length;
+  const next=STEPS.findIndex((s,i)=>!S.steps[i]);
+  return {done,pct:Math.round(done/STEPS.length*100),phase:next<0?'Selesai':PHASES[STEPS[next].p]};
+}
+function simCalc(p){
+  const L=+p.luas,margin=.6;
+  const nowM=L*p.prodNow*1000*p.harga*margin/12, afterM=L*p.prodAfter*1000*p.harga*margin/12;
+  const cost=L*p.biaya*1e6, grant=Math.min(L,4)*S.dana*1e6, oop=Math.max(0,cost-grant);
+  const lost=Math.max(0,(nowM-p.tumpang*1e6))*p.tbm;
+  const gap=oop+lost;
+  const A=[0],B=[-oop];let cross=null;
+  for(let m=1;m<=96;m++){
+    A.push(A[m-1]+nowM);
+    B.push(B[m-1]+(m<=p.tbm?p.tumpang*1e6:afterM));
+    if(cross===null&&B[m]>=A[m])cross=m;
+  }
+  return {nowM,afterM,cost,grant,oop,lost,gap,A,B,cross};
+}
+
+/* ---------- views ---------- */
+function loginView(){
+  return `<div class="login"><div class="wrap">
+   <div class="lcard">
+     <a class="logo" href="#masuk" aria-label="Rejuve">${logoSVG()}<span>Rejuve</span></a>
+     <h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Lahan yang sama, hasil lebih baik.</h1>
+     <p class="lead">Aplikasi peremajaan sawit rakyat. Cek kelayakan, lacak tahapan, hitung dana, dan lihat provinsi yang paling perlu diprioritaskan.</p>
+     <div class="sdg"><span style="background:#a21942"><b>8</b>Pekerjaan layak dan<br>pertumbuhan ekonomi</span><span style="background:#dd1367"><b>10</b>Berkurangnya<br>kesenjangan</span></div>
+     <button class="gbtn" id="gbtn" type="button">${GLOGO}<span>Masuk dengan Google</span></button>
+     <form class="dialog" id="loginForm" hidden>
+       <p class="note" style="margin:0">Ini versi pratinjau. Login Google sungguhan memerlukan layanan autentikasi (misalnya Firebase) yang dipasang saat aplikasi dipublikasikan. Untuk sekarang, cukup isi nama panggilanmu.</p>
+       <label class="fld"><span>Nama panggilan</span><input type="text" id="lname" maxlength="30" placeholder="Contoh: Pak Slamet" autocomplete="off"></label>
+       <button class="btn primary" type="submit">Lanjutkan</button>
+     </form>
+     <button class="btn ghost small" id="guest" type="button" style="justify-self:start">Masuk sebagai tamu</button>
+   </div>
+   <div class="scene">
+     ${palm(0,{cls:'pa',style:'left:-4%;width:46%',len:88})}
+     ${palm(0,{cls:'pa',style:'left:26%;width:36%;opacity:.7',dark:true,len:80})}
+     ${palm(0,{cls:'pa',style:'right:-6%;width:44%;opacity:.8',len:86})}
+     ${farmer('farmer')}
+     <svg class="hill" viewBox="0 0 800 170" preserveAspectRatio="none" aria-hidden="true"><ellipse cx="200" cy="130" rx="330" ry="80" fill="#3d5a14"/><ellipse cx="620" cy="140" rx="340" ry="80" fill="#2f4a12"/></svg>
+   </div></div></div>`;
+}
+function bindLogin(){
+  const enter=name=>{S.user={name:name||'Tamu'};save();location.hash='beranda';render()};
+  $('#gbtn').onclick=()=>{$('#loginForm').hidden=false;$('#lname').focus()};
+  $('#loginForm').onsubmit=e=>{e.preventDefault();enter(($('#lname').value||'').trim()||'Pekebun')};
+  $('#guest').onclick=()=>enter('Tamu');
+}
+
+function shell(id,html){
+  const nm=S.user.name;
+  return `<header class="hdr"><div class="wrap hdr-in">
+   <a class="logo" href="#beranda" aria-label="Rejuve, ke beranda">${logoSVG()}<span>Rejuve</span></a>
+   <nav class="nav" aria-label="Fitur">${ROUTES.map(r=>`<a href="#${r.id}" ${r.id===id?'aria-current="page"':''}>${icon(r.ic)}${r.label}</a>`).join('')}</nav>
+   <div class="user"><span class="avatar" aria-hidden="true">${esc(nm[0].toUpperCase())}</span><span class="nm">${esc(nm)}</span><button class="btn ghost small" id="logout" type="button">Keluar</button></div>
+  </div></header>
+  <main class="wrap" id="view">${html}</main>
+  <footer><div class="wrap">Sumber data: FAOSTAT 2024, BPS 2024–2025, BPDP Kemenkeu, Kementerian RI (data per 25 Februari 2026). Skor, hibah, dan simulasi bersifat indikatif. Cek ketentuan resmi di dinas perkebunan dan BPDP.</div></footer>`;
+}
+
+function berandaView(){
+  const si=stageInfo(), el=S.k.touched?eligibility(S.k):null;
+  const feat=ROUTES.slice(1).map(r=>`<a class="card feat" href="#${r.id}"><span class="ic">${icon(r.ic)}</span><h3>${r.label}</h3><p>${r.d}</p></a>`).join('');
+  return `
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="tag">Peremajaan Sawit Rakyat</span>
+      <h1>Halo, ${esc(S.user.name)}!</h1>
+      <p class="lead">Luas kebun sawit Indonesia terbesar di dunia, tetapi hasil per hektare belum yang tertinggi. Rejuve membantumu menyiapkan peremajaan di kebun sendiri tanpa membuka lahan baru.</p>
+      <div class="cta"><a class="btn primary" href="#kelayakan">Cek kelayakan</a><a class="btn ghost" href="#peta">Lihat peta prioritas</a></div>
+      <div class="status">
+        <div><small>Kesiapan pengajuan</small><div class="big">${si.pct}%</div><div class="bar"><i style="width:${si.pct}%"></i></div><small>Tahap PSR: ${si.phase}</small></div>
+        <div><small>Estimasi hibah</small><div class="big">${el?rpc(el.hibah):'Belum dihitung'}</div><small>${el?`Rp${S.dana} jt/ha, maks. 4 ha (indikatif)`:'Isi data kebun di Cek Kelayakan'}</small></div>
+      </div>
+    </div>
+    <div class="hero-art">${palm(0,{cls:'p2',dark:true})}${palm(0,{cls:'p1'})}${farmer('farmer')}</div>
+  </section>
+
+  <section class="blk">
+    <h2>Mengapa peremajaan perlu dipercepat</h2>
+    <p class="sub">Indonesia punya panen sawit terluas dunia pada 2024, dan sebagian besarnya milik pekebun rakyat. Dana peremajaan belum menjangkau semua. Sudah sampai ke siapa, dan siapa yang tertinggal?</p>
+    <div class="grid g4">
+      <div class="stat"><b>14,32 juta ha</b><span>luas panen sawit Indonesia, peringkat 1 dunia</span><em>FAOSTAT 2024</em></div>
+      <div class="stat"><b>16,97 ton/ha</b><span>hasil panen TBS, peringkat 3 di bawah Malaysia dan Thailand</span><em>FAOSTAT 2024</em></div>
+      <div class="stat hot"><b>−4,2%</b><span>produktivitas turun 2022 ke 2024, luas tetap 16,83 juta ha</span><em>BPS 2024</em></div>
+      <div class="stat"><b>Rp12,48 T</b><span>dana PSR untuk 438.217 ha dan 196.846 pekebun</span><em>BPDP Kemenkeu, 2016–30 Sep 2025</em></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <h2>Data di balik aplikasi</h2>
+    <div class="grid g3" style="margin-top:1rem">
+      <div class="pcard"><h3>Posisi Indonesia, 2024</h3>
+        <p class="minihead">Luas panen (juta ha)</p>
+        <div class="rows">${[['Indonesia',14.32,1],['Malaysia',5.07],['Nigeria',4.49],['Thailand',1.01]].map(([n,v,m])=>`<div class="row ${m?'me':''}"><span>${n}</span><span class="tr"><i style="width:${v/14.32*100}%"></i><b>${fmt(v)}</b></span></div>`).join('')}</div>
+        <p class="minihead" style="margin-top:1rem">Hasil panen (ton TBS/ha)</p>
+        <div class="rows">${[['Malaysia',19.77],['Thailand',18.33],['Indonesia',16.97,1],['Kolombia',15.3]].map(([n,v,m])=>`<div class="row ${m?'me':''}"><span>${n}</span><span class="tr"><i style="width:${v/19.77*100}%"></i><b>${fmt(v)}</b></span></div>`).join('')}</div>
+        <p class="src">Sumber: FAOSTAT, 2024</p></div>
+      <div class="pcard"><h3>Siapa pemilik kebun sawit?</h3>
+        <div class="donutwrap">
+          <svg class="donut" viewBox="0 0 120 120" role="img" aria-label="Rakyat 42,9 persen, swasta 53,6 persen, negara 3,5 persen"><g transform="rotate(-90 60 60)" fill="none" stroke-width="22">
+            <circle cx="60" cy="60" r="44" stroke="#f39a2b" stroke-dasharray="${42.9*2.7646} 999"/>
+            <circle cx="60" cy="60" r="44" stroke="#14513a" stroke-dasharray="${53.6*2.7646} 999" stroke-dashoffset="${-42.9*2.7646}"/>
+            <circle cx="60" cy="60" r="44" stroke="#7a8f2a" stroke-dasharray="${3.5*2.7646} 999" stroke-dashoffset="${-96.5*2.7646}"/></g>
+            <text x="60" y="58" text-anchor="middle" font-family="Poppins" font-weight="800" font-size="16" fill="#0f3321">42,9%</text><text x="60" y="72" text-anchor="middle" font-family="DM Sans" font-size="8" fill="#0f3321">rakyat</text></svg>
+          <div class="legend"><span><i style="background:#f39a2b"></i>Rakyat 42,9%</span><span><i style="background:#14513a"></i>Swasta 53,6%</span><span><i style="background:#7a8f2a"></i>Negara 3,5%</span></div>
+        </div>
+        <p style="margin-top:.8rem;font-size:.92rem">Dari 16,01 juta ha kebun sawit, pekebun rakyat mengelola 42,9%. Sisanya 57,1% dikelola negara dan swasta.</p>
+        <p class="src">Sumber: bps.go.id, 2024</p></div>
+      <div class="pcard"><h3>Baru ±70% yang ditanam kembali</h3>
+        <div class="funnel">
+          <div class="f" style="background:#14513a;width:100%"><span>Rekomendasi teknis</span><span>417.008 ha</span></div>
+          <div class="f" style="background:#5b8a1f;width:${310138/417008*100}%"><span>Tebang</span><span>310.138</span></div>
+          <div class="f" style="background:#c8191f;width:${290701/417008*100}%"><span>Tanam kembali</span><span>290.701</span></div>
+        </div>
+        <p style="margin-top:.8rem;font-size:.92rem">Dari 417.008 ha yang dinyatakan layak (2017–2025), 69,7% sudah ditanami bibit baru. Sekitar 30% belum sampai tahap tanam.</p>
+        <p class="src">Sumber: Kementerian RI, data per 25 Februari 2026. Persentase dihitung dari angka tersebut.</p></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="grid g2" style="align-items:stretch">
+      <div class="card"><h2>Apa itu PSR?</h2>
+        <p style="margin-top:.7rem">PSR atau Peremajaan Sawit Rakyat adalah program untuk membantu pekebun rakyat memperbarui kebun kelapa sawit mereka dengan sawit yang lebih berkelanjutan dan berkualitas. Program ini juga mengurangi risiko pembukaan lahan ilegal, yang berkaitan dengan emisi sektor penggunaan lahan dan kehutanan (LULUCF).</p>
+        <p class="src" style="color:var(--mute)">Sumber: BPDP Kemenkeu</p>
+        <p style="margin-top:.8rem">Dana PSR rata-rata sekitar <b>Rp28,5 juta per hektare</b> dan <b>Rp63,4 juta per pekebun</b> sepanjang 2016–2025. <span style="color:var(--mute);font-size:.85rem">(dihitung dari angka di atas)</span></p></div>
+      <div class="card"><h2>Cara memakai Rejuve</h2>
+        <ol class="steps3" style="margin-top:.8rem">
+          <li><span><b>Cek kelayakan</b><br><span style="color:var(--mute)">Isi data kebun, lihat skor dan perkiraan hibah.</span></span></li>
+          <li><span><b>Lengkapi dan lacak</b><br><span style="color:var(--mute)">Ikuti daftar tahapan sampai panen perdana.</span></span></li>
+          <li><span><b>Hitung dan bandingkan</b><br><span style="color:var(--mute)">Simulasikan dana, lihat klaster provinsi, kelola anggota koperasi.</span></span></li>
+        </ol></div>
+    </div>
+  </section>
+
+  <section class="blk"><h2>Fitur</h2><div class="grid g3" style="margin-top:1rem">${feat}</div></section>`;
+}
+
+function kelayakanView(){
+  const k=S.k;
+  return `<h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Cek Kelayakan</h1>
+  <p class="sub" style="margin-top:.6rem">Jawab beberapa pertanyaan tentang kebunmu. Hasilnya berupa skor kesiapan dan perkiraan hibah.</p>
+  <div class="split">
+   <form class="card form" id="kf" onsubmit="return false">
+    <label class="fld"><span>Provinsi</span><select id="k-prov">${PROVS.map(p=>`<option ${p===k.prov?'selected':''}>${p}</option>`).join('')}</select></label>
+    <div class="two">
+     <label class="fld"><span>Luas kebun (ha)</span><input type="number" id="k-luas" min="0.1" max="50" step="0.1" value="${k.luas}"></label>
+     <label class="fld"><span>Umur tanaman (tahun)</span><input type="number" id="k-umur" min="1" max="45" step="1" value="${k.umur}"></label>
+    </div>
+    <label class="fld"><span>Hasil panen (ton TBS/ha/tahun)</span><input type="number" id="k-prod" min="1" max="35" step="0.5" value="${k.prod}"><small>Rata-rata nasional 16,97. Perkiraan kasar dari hasil panenmu saja sudah cukup.</small></label>
+    <label class="fld"><span>Legalitas lahan</span><select id="k-legal"><option value="lengkap" ${k.legal==='lengkap'?'selected':''}>Sertifikat atau bukti kepemilikan, dan STDB</option><option value="desa" ${k.legal==='desa'?'selected':''}>Surat desa atau girik saja</option><option value="belum" ${k.legal==='belum'?'selected':''}>Belum ada dokumen</option></select></label>
+    <label class="fld"><span>Apakah lahan di dalam kawasan hutan?</span><select id="k-hutan"><option value="tidak" ${k.hutan==='tidak'?'selected':''}>Tidak, sudah dicek</option><option value="ragu" ${k.hutan==='ragu'?'selected':''}>Belum tahu</option><option value="ya" ${k.hutan==='ya'?'selected':''}>Ya</option></select></label>
+    <label class="fld"><span>Anggota kelompok tani atau koperasi?</span><select id="k-lemb"><option value="ya" ${k.lemb==='ya'?'selected':''}>Ya</option><option value="belum" ${k.lemb==='belum'?'selected':''}>Belum</option></select></label>
+   </form>
+   <div class="card sticky" id="kres" aria-live="polite"></div>
+  </div>`;
+}
+function kelayakanInit(){
+  const upd=()=>{
+    const k=S.k;
+    ['prov','luas','umur','prod','legal','hutan','lemb'].forEach(f=>{const v=$('#k-'+f).value;k[f]=['luas','umur','prod'].includes(f)?parseFloat(v)||0:v});
+    k.touched=true;save();
+    const e=eligibility(k), C=2*Math.PI*54;
+    $('#kres').innerHTML=`<div class="resbox">
+      <svg class="ring" viewBox="0 0 130 130" role="img" aria-label="Skor ${e.total} dari 100"><circle cx="65" cy="65" r="54" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="12"/><circle cx="65" cy="65" r="54" fill="none" stroke="${e.total>=75?'#e3ea2a':e.total>=50?'#f39a2b':'#e05555'}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C*e.total/100} ${C}" transform="rotate(-90 65 65)"/><text x="65" y="76" text-anchor="middle">${e.total}</text></svg>
+      <div><span class="chip ${e.status[1]}">${e.status[0]}</span>
+      <p style="margin-top:.5rem;color:var(--mute);font-size:.85rem">Estimasi hibah</p><div class="big">${rpc(e.hibah)}</div>
+      <p class="note" style="margin-top:.3rem">Rp${S.dana} jt/ha, maks. 4 ha (indikatif)</p></div></div>
+      ${PRIORITY.includes(k.prov)?`<p style="margin-top:.8rem"><span class="chip or">Provinsi prioritas</span> <span style="font-size:.88rem;color:var(--mute)">${k.prov} masuk klaster prioritas peremajaan.</span></p>`:''}
+      <div class="break">
+       <div><div class="l"><span>Kebutuhan peremajaan</span><span>${e.need}/40</span></div><div class="bar"><i style="width:${e.need/40*100}%"></i></div></div>
+       <div><div class="l"><span>Kelengkapan syarat</span><span>${e.ready}/60</span></div><div class="bar"><i style="width:${e.ready/60*100}%"></i></div></div></div>
+      ${e.todo.length?`<h3 style="margin-top:1rem">Yang perlu dilengkapi</h3><ul class="todo">${e.todo.map(t=>`<li>${t}</li>`).join('')}</ul>`:`<p style="margin-top:1rem">Persyaratan utama terlihat lengkap. Lanjut ke <a href="#pelacak" style="color:var(--lime)">Pelacak</a>.</p>`}
+      <p class="note">Skor ini perkiraan sederhana, bukan keputusan BPDP. Syarat dan besaran dana bisa berubah, jadi cek ke dinas perkebunan.</p>`;
+  };
+  $('#kf').addEventListener('input',upd);$('#kf').addEventListener('change',upd);upd();
+}
+
+function pelacakView(){
+  const ph=PHASES.map((p,pi)=>`<div class="phase"><h3><span class="chip">${pi+1}</span>${p}</h3><ul class="chk">${STEPS.map((s,i)=>s.p===pi?`<li><label class="${S.steps[i]?'done':''}"><input type="checkbox" data-step="${i}" ${S.steps[i]?'checked':''}><span><b>${s.t}</b><small>${s.d}</small></span></label></li>`:'').join('')}</ul></div>`).join('');
+  return `<h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Pelacak Tahapan</h1>
+  <p class="sub" style="margin-top:.6rem">Centang langkah yang sudah selesai. Kemajuanmu tersimpan di perangkat ini.</p>
+  <div class="split"><div class="card" id="ptrack">${ph}</div>
+  <div class="grid sticky"><div class="card" id="pprog"></div>
+   <div class="pcard"><h3>Perbandingan nasional</h3>
+    <div class="funnel"><div class="f" style="background:#14513a"><span>Rekomtek</span><span>417.008 ha</span></div>
+    <div class="f" style="background:#5b8a1f;width:74.4%"><span>Tebang</span><span>74,4%</span></div>
+    <div class="f" style="background:#c8191f;width:69.7%"><span>Tanam kembali</span><span>69,7%</span></div></div>
+    <p style="margin-top:.7rem;font-size:.9rem">Secara nasional, sekitar 30% kebun yang sudah layak belum sampai tahap tanam. Posisimu di mana?</p><p class="src">Kementerian RI, data per 25 Februari 2026</p></div></div></div>`;
+}
+function pelacakInit(){
+  const upd=()=>{const si=stageInfo();$('#pprog').innerHTML=`<small style="color:var(--mute)">Kesiapan pengajuan</small><div class="big">${si.pct}%</div><div class="bar"><i style="width:${si.pct}%"></i></div><p>Tahap PSR: <b>${si.phase}</b> · ${si.done} dari ${STEPS.length} langkah</p>`};
+  $('#ptrack').addEventListener('change',e=>{const i=e.target.dataset.step;if(i===undefined)return;S.steps[i]=e.target.checked;e.target.closest('label').classList.toggle('done',e.target.checked);save();upd()});
+  upd();
+}
+
+function chartSVG(r,tbm){
+  const W=640,H=300,l=62,rr=14,t=16,b=34;
+  const all=r.A.concat(r.B),mn=Math.min(0,...all),mx=Math.max(...all);
+  const raw=(mx-mn)/4||1,mag=Math.pow(10,Math.floor(Math.log10(raw))),step=[1,2,2.5,5,10].map(x=>x*mag).find(x=>x>=raw);
+  const y0=Math.floor(mn/step)*step,y1=Math.ceil(mx/step)*step;
+  const X=m=>l+m/96*(W-l-rr),Y=v=>t+(1-(v-y0)/(y1-y0))*(H-t-b);
+  let g='';
+  for(let v=y0;v<=y1+1;v+=step)g+=`<line class="gl" x1="${l}" x2="${W-rr}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ax" x="${l-8}" y="${Y(v)+4}" text-anchor="end">${fmt(Math.round(v/1e6))} jt</text>`;
+  for(let y=0;y<=8;y++)g+=`<text class="ax" x="${X(y*12)}" y="${H-12}" text-anchor="middle">Th ${y}</text>`;
+  const path=a=>a.map((v,m)=>(m?'L':'M')+X(m).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Arus kas kumulatif kebun, dengan dan tanpa peremajaan">
+   <rect class="wait" x="${X(0)}" y="${t}" width="${X(tbm)-X(0)}" height="${H-t-b}"/>
+   <text class="lbl" x="${X(0)+6}" y="${t+13}">Masa tunggu panen</text>${g}
+   <path class="l1" d="${path(r.A)}"/><path class="l2" d="${path(r.B)}"/>
+   ${r.cross?`<circle class="x" cx="${X(r.cross)}" cy="${Y(r.B[r.cross])}" r="6"/><text class="lbl" style="fill:var(--lime)" x="${Math.min(X(r.cross),W-90)}" y="${Y(r.B[r.cross])-12}">Impas bulan ${r.cross}</text>`:''}</svg>`;
+}
+function danaView(){
+  const p=S.sim;
+  const f=(id,lab,min,max,step,unit,hint)=>`<label class="fld"><span>${lab}: <b id="v-${id}"></b> ${unit}</span><input type="range" id="s-${id}" min="${min}" max="${max}" step="${step}" value="${p[id]}">${hint?`<small>${hint}</small>`:''}</label>`;
+  return `<h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Simulasi Dana</h1>
+  <p class="sub" style="margin-top:.6rem">Setelah kebun ditebang, ada masa tanpa panen. Simulasi ini menghitung kesenjangannya dan kapan peremajaan mulai lebih menguntungkan. Semua angka bisa kamu ubah.</p>
+  <div class="split"><form class="card form" id="sf" onsubmit="return false">
+    ${f('luas','Luas kebun',0.5,10,0.5,'ha')}
+    ${f('prodNow','Hasil panen sekarang',4,20,0.5,'ton TBS/ha/th')}
+    ${f('prodAfter','Hasil panen setelah peremajaan',12,30,0.5,'ton TBS/ha/th','Asumsi untuk kebun terawat. Nasional 16,97 saat ini.')}
+    ${f('harga','Harga TBS',2000,4500,50,'Rp/kg','Ubah sesuai harga di tempatmu.')}
+    ${f('biaya','Biaya peremajaan',40,90,1,'juta Rp/ha')}
+    ${f('tbm','Masa tunggu sampai panen',30,42,1,'bulan')}
+    ${f('tumpang','Pendapatan tumpang sari',0,5,0.25,'juta Rp/bulan','Tanaman sela selama tanaman muda.')}
+    <label class="fld"><span>Dana PSR per hektare (juta Rp)</span><input type="number" id="s-dana" min="10" max="100" step="1" value="${S.dana}"><small>Angka resmi bisa berubah. Rata-rata historis sekitar 28,5 juta per ha.</small></label>
+   </form>
+   <div class="card sticky"><h3>Arus kas kumulatif dari kebun</h3><p class="note" style="margin:.2rem 0 .6rem">Garis terang: dengan peremajaan. Putus-putus: tanpa peremajaan. Margin bersih diasumsikan 60%.</p><div id="schart"></div><div class="kpis" id="skpi" aria-live="polite"></div></div></div>`;
+}
+function danaInit(){
+  const p=S.sim,units={};
+  const upd=()=>{
+    Object.keys(p).forEach(id=>{const el=$('#s-'+id);if(el){p[id]=parseFloat(el.value);const v=$('#v-'+id);if(v)v.textContent=id==='harga'?fmt(p[id]):fmt(p[id])}});
+    const d=parseFloat($('#s-dana').value);if(d>0)S.dana=d;save();
+    const r=simCalc(p);
+    $('#schart').innerHTML=chartSVG(r,p.tbm);
+    $('#skpi').innerHTML=`
+     <div class="kpi"><small>Pendapatan bersih sekarang</small><b>${rpc(r.nowM)}/bln</b></div>
+     <div class="kpi"><small>Setelah peremajaan</small><b>${rpc(r.afterM)}/bln</b></div>
+     <div class="kpi"><small>Dana PSR diterima</small><b>${rpc(r.grant)}</b></div>
+     <div class="kpi ${r.oop>0?'warn':''}"><small>Biaya di luar dana</small><b>${rpc(r.oop)}</b></div>
+     <div class="kpi warn"><small>Pendapatan hilang saat menunggu</small><b>${rpc(r.lost)}</b></div>
+     <div class="kpi warn"><small>Total kesenjangan</small><b>${rpc(r.gap)}</b></div>
+     <div class="kpi" style="grid-column:1/-1"><small>Titik impas dibanding tidak meremajakan</small><b>${r.cross?`Bulan ke-${r.cross} (sekitar tahun ke-${(r.cross/12).toFixed(1).replace('.',',')})`:'Belum impas dalam 8 tahun'}</b></div>`;
+  };
+  $('#sf').addEventListener('input',upd);upd();
+}
+
+function petaView(){
+  const T=[['Luas sawit rakyat (ha)','1 juta','189 ribu','428 ribu'],['Porsi sawit rakyat','57,6%','39,4%','54,8%'],['Produksi/ha kebun rakyat (ton)','2,02','2,39','3,34'],['Selisih produktivitas dengan kebun swasta (ton/ha)','0,81','0,88','−0,05'],['Tanaman tua/rusak','7,4%','2,9%','2,4%']];
+  const mini=(title,vals,unit,max)=>`<p class="minihead">${title}</p><div class="mini">${['Prioritas','Menengah','Relatif produktif'].map((n,i)=>`<div class="r"><span>${n}</span><span class="tr"><i style="width:${vals[i]/max*100}%;background:${['#f39a2b','#c9a31f','#14513a'][i]}"></i></span><b>${fmt(vals[i])}${unit}</b></div>`).join('')}</div>`;
+  return `<h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Peta Prioritas</h1>
+  <p class="sub" style="margin-top:.6rem">Analisis klaster K-Means pada 14 provinsi dengan sawit rakyat di atas 100.000 ha (BPS, 2025). Provinsi dikelompokkan menurut luas dan porsi sawit rakyat, produksi per hektare kebun rakyat, selisihnya dengan kebun swasta, dan persentase tanaman tua atau rusak.</p>
+  <div class="split">
+   <div class="mapbox"><svg viewBox="0 0 700 340" role="img" aria-label="Peta skematis: Aceh, Riau, Jambi, dan Kalimantan Barat masuk klaster prioritas">
+     <polygon class="land" points="30,45 70,30 130,70 200,120 270,190 322,236 300,264 255,256 180,206 110,150 60,100"/>
+     <polygon class="land" points="340,110 392,70 452,80 502,120 508,192 460,242 390,248 345,202"/>
+     <polygon class="land" points="300,286 360,278 440,288 484,302 440,312 360,304 310,300"/>
+     <polygon class="land" points="545,90 580,95 570,140 602,160 586,212 560,232 554,180 534,150 550,128"/>
+     <polygon class="land" points="620,170 692,176 692,250 640,246 614,206"/>
+     <polygon class="land pri" points="30,45 70,30 100,58 84,92 60,100"/>
+     <polygon class="land pri" points="150,84 200,120 226,150 190,158 150,126"/>
+     <polygon class="land pri" points="196,164 270,190 262,224 214,206"/>
+     <polygon class="land pri" points="340,110 392,70 424,92 420,176 390,200 345,202"/>
+     ${[['Aceh',62,64,'Aceh'],['Riau',188,138,'Riau'],['Jambi',236,194,'Jambi'],['Kalimantan Barat',384,150,'Kalbar']].map(([n,x,y,l],i)=>`<g class="pin" tabindex="0" role="button" aria-label="${n}" data-pin="${n}"><circle cx="${x}" cy="${y}" r="9"/><text x="${x+14}" y="${y+4}">${l}</text></g>`).join('')}
+   </svg><p class="note" style="padding:.4rem .6rem">Peta skematis, bukan batas wilayah. Oranye: klaster prioritas peremajaan.</p></div>
+   <div class="card"><div class="tabs" role="tablist"><button class="tab o" role="tab" aria-selected="true" data-c="0">Prioritas Peremajaan</button><button class="tab" role="tab" aria-selected="false" data-c="1">Menengah</button><button class="tab" role="tab" aria-selected="false" data-c="2">Relatif Produktif</button></div><div id="cinfo" aria-live="polite"></div></div>
+  </div>
+  <section class="blk"><h2>Profil klaster</h2>
+   <div class="pcard pt" style="margin-top:1rem"><div class="tscroll"><table><thead><tr><th>Profil klaster</th><th class="c1">Prioritas Peremajaan</th><th class="c2">Menengah</th><th class="c3">Relatif Produktif</th></tr></thead><tbody>
+    ${T.map(r=>`<tr><td>${r[0]}</td><td class="c1">${r[1]}</td><td class="c2">${r[2]}</td><td class="c3">${r[3]}</td></tr>`).join('')}
+    <tr class="tot"><td style="background:var(--red)">Jumlah provinsi</td><td>4</td><td>6</td><td>4</td></tr></tbody></table></div>
+    <p style="margin-top:.8rem;font-size:.92rem">Klaster prioritas (Aceh, Riau, Jambi, Kalimantan Barat) memiliki kebun rakyat paling luas, tetapi produksi per hektarnya paling rendah dan tanaman tua/rusaknya paling tinggi. Kesenjangan ini menunjukkan kebutuhan peremajaan yang tidak sama di setiap daerah.</p><p class="src">Sumber: BPS (2025), diolah</p></div>
+   <div class="grid g2" style="margin-top:1rem"><div class="pcard">${mini('Tanaman tua/rusak',[7.4,2.9,2.4],'%',8)}</div><div class="pcard">${mini('Produksi per ha kebun rakyat',[2.02,2.39,3.34],' t',3.6)}</div></div>
+  </section>`;
+}
+function petaInit(){
+  const C=[
+   {n:'Prioritas Peremajaan',c:'or',p:'Aceh, Riau, Jambi, Kalimantan Barat',t:'Sawit rakyatnya paling luas (1 juta ha), produksi per hektarnya paling rendah (2,02 ton), dan tanaman tua/rusaknya paling tinggi (7,4%). Selisih produktivitas dengan kebun swasta juga terbesar: 0,81 ton/ha.',cta:true},
+   {n:'Menengah',c:'',p:'6 provinsi',t:'Luas sawit rakyat 189 ribu ha dengan porsi 39,4%. Produksi 2,39 ton/ha, tanaman tua/rusak 2,9%. Selisih dengan kebun swasta 0,88 ton/ha.'},
+   {n:'Relatif Produktif',c:'',p:'4 provinsi',t:'Luas sawit rakyat 428 ribu ha dengan porsi 54,8%. Produksi 3,34 ton/ha, bahkan sedikit di atas kebun swasta (−0,05 ton/ha). Tanaman tua/rusak 2,4%.'}];
+  const show=i=>{const c=C[i];$$('.tab').forEach((b,j)=>b.setAttribute('aria-selected',j===i));
+    $('#cinfo').innerHTML=`<span class="chip ${c.c}">${c.n}</span><h2 style="color:var(--ink);margin:.6rem 0 .5rem;font-size:1.3rem">${c.p}</h2><p>${c.t}</p>${c.cta?`<p style="margin-top:.8rem;color:var(--mute);font-size:.9rem">Kebunmu di salah satu provinsi ini? Mulai dari <a href="#kelayakan" style="color:var(--lime)">Cek Kelayakan</a>.</p>`:''}`};
+  $$('.tab').forEach((b,i)=>b.onclick=()=>show(i));
+  $$('.pin').forEach(g=>{const go=()=>{show(0);$$('.pin').forEach(x=>x.classList.toggle('on',x===g))};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
+  show(0);
+}
+
+function bakarView(){
+  let idx=0;
+  const body=BAKAR.map(g=>`<div class="phase"><h3>${g.g}</h3><ul class="chk">${g.i.map(([t,d])=>{const i=idx++;return `<li><label class="${S.bakar[i]?'done':''}"><input type="checkbox" data-b="${i}" ${S.bakar[i]?'checked':''}><span><b>${t}</b><small>${d}</small></span></label></li>`}).join('')}</ul></div>`).join('');
+  return `<h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Tanam Tanpa Bakar</h1>
+  <p class="sub" style="margin-top:.6rem">PSR dirancang untuk mengurangi risiko pembukaan lahan ilegal. Gunakan daftar ini sebelum, saat, dan setelah menebang tanaman tua.</p>
+  <div class="split"><div class="card">${body}</div>
+  <div class="grid sticky"><div class="card" id="bprog"></div><div class="pcard"><h3>Mengapa tanpa bakar?</h3><p style="font-size:.95rem">Peremajaan di lahan yang sama berarti tidak perlu membuka hutan atau lahan baru. Membersihkan lahan tanpa api menjaga tanah, mengurangi asap, dan menghindarkan kebun dari masalah hukum. Batang tua yang dicacah juga kembali menjadi bahan organik bagi tanaman baru.</p><p class="src">Daftar periksa ini panduan praktis, bukan peraturan resmi.</p></div></div></div>`;
+}
+function bakarInit(){
+  const total=BAKAR.reduce((a,g)=>a+g.i.length,0);
+  const upd=()=>{const n=Object.values(S.bakar).filter(Boolean).length,pct=Math.round(n/total*100);
+    $('#bprog').innerHTML=`<small style="color:var(--mute)">Kesiapan lahan tanpa bakar</small><div class="big">${pct}%</div><div class="bar"><i style="width:${pct}%"></i></div><p>${n} dari ${total} butir terpenuhi. ${n===total?'<span class="chip">Lahan siap</span>':''}</p>`};
+  $('#view').addEventListener('change',e=>{const i=e.target.dataset.b;if(i===undefined)return;S.bakar[i]=e.target.checked;e.target.closest('label').classList.toggle('done',e.target.checked);save();upd()});
+  upd();
+}
+
+function memberStatus(m){
+  const need=m.umur>=25||m.umur>=20;
+  if(m.legal==='ya'&&m.umur>=25)return['Siap diajukan',''];
+  if(m.legal!=='ya'&&m.umur>=20)return['Lengkapi legalitas','or'];
+  if(m.legal==='ya'&&m.umur>=20)return['Segera masuk antrean',''];
+  return['Belum mendesak',''];
+}
+function koperasiView(){
+  return `<h1 style="font-size:clamp(1.8rem,4.5vw,2.6rem)">Mode Koperasi</h1>
+  <p class="sub" style="margin-top:.6rem">Catat anggota dan kebunnya. Rejuve menunjukkan siapa yang siap diajukan, siapa yang perlu melengkapi legalitas, dan total perkiraan dana kelompok. Tiga baris pertama hanyalah contoh, ganti dengan data anggotamu.</p>
+  <div class="sum" id="msum"></div>
+  <div class="card"><div class="tscroll"><table class="members"><thead><tr><th>Nama</th><th>Luas (ha)</th><th>Umur tanaman</th><th>Legalitas lengkap</th><th>Status</th><th></th></tr></thead><tbody id="mrows"></tbody></table></div>
+  <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem"><button class="btn primary small" id="madd" type="button">Tambah anggota</button><button class="btn ghost small" id="mcopy" type="button">Salin ringkasan</button><span id="mmsg" class="note" style="align-self:center;margin:0" role="status"></span></div></div>`;
+}
+function koperasiInit(){
+  const rows=()=>{$('#mrows').innerHTML=S.members.map((m,i)=>`<tr data-i="${i}"><td><input type="text" data-f="n" value="${esc(m.n)}" aria-label="Nama anggota"></td><td><input type="number" data-f="ha" min="0" step="0.1" value="${m.ha}" aria-label="Luas"></td><td><input type="number" data-f="umur" min="0" max="45" value="${m.umur}" aria-label="Umur tanaman"></td><td><select data-f="legal" aria-label="Legalitas"><option value="ya" ${m.legal==='ya'?'selected':''}>Ya</option><option value="tidak" ${m.legal!=='ya'?'selected':''}>Belum</option></select></td><td><span class="chip ${memberStatus(m)[1]}" data-st>${memberStatus(m)[0]}</span></td><td><button class="btn danger small" data-del type="button" aria-label="Hapus ${esc(m.n)}">Hapus</button></td></tr>`).join('')||'<tr><td colspan="6" style="color:var(--mute)">Belum ada anggota. Tekan Tambah anggota.</td></tr>';sum()};
+  const sum=()=>{const ha=S.members.reduce((a,m)=>a+(+m.ha||0),0),ready=S.members.filter(m=>memberStatus(m)[0]==='Siap diajukan').length,dana=S.members.reduce((a,m)=>a+Math.min(+m.ha||0,4)*S.dana*1e6,0);
+    $('#msum').innerHTML=[['Anggota',S.members.length],['Total luas',fmt(ha)+' ha'],['Siap diajukan',ready],['Perkiraan dana',rpc(dana)]].map(([a,b])=>`<div class="kpi"><small>${a}</small><b>${b}</b></div>`).join('')};
+  $('#mrows').addEventListener('input',e=>{const tr=e.target.closest('tr'),f=e.target.dataset.f;if(!tr||!f)return;const m=S.members[tr.dataset.i];m[f]=['ha','umur'].includes(f)?parseFloat(e.target.value)||0:e.target.value;const st=memberStatus(m),c=$('[data-st]',tr);c.textContent=st[0];c.className='chip '+st[1];save();sum()});
+  $('#mrows').addEventListener('click',e=>{if(e.target.closest('[data-del]')){S.members.splice(+e.target.closest('tr').dataset.i,1);save();rows()}});
+  $('#madd').onclick=()=>{S.members.push({n:'',ha:1,umur:20,legal:'tidak'});save();rows()};
+  $('#mcopy').onclick=async()=>{const t='Ringkasan anggota (Rejuve)\n'+S.members.map(m=>`- ${m.n||'Tanpa nama'}: ${m.ha} ha, umur ${m.umur} th, ${memberStatus(m)[0]}`).join('\n');
+    try{await navigator.clipboard.writeText(t);$('#mmsg').textContent='Ringkasan disalin.'}catch(e){$('#mmsg').textContent='Salin manual: tekan lama pada daftar di atas.'}};
+  rows();
+}
+
+/* ---------- router ---------- */
+const VIEWS={beranda:[berandaView,null],kelayakan:[kelayakanView,kelayakanInit],pelacak:[pelacakView,pelacakInit],dana:[danaView,danaInit],peta:[petaView,petaInit],'tanpa-bakar':[bakarView,bakarInit],koperasi:[koperasiView,koperasiInit]};
+let lastId=null;
+function render(){
+  const app=$('#app');
+  if(!S.user){app.innerHTML=loginView();bindLogin();lastId=null;return}
+  let id=location.hash.slice(1);if(!VIEWS[id])id='beranda';
+  const [v,init]=VIEWS[id];
+  app.innerHTML=shell(id,v());
+  $('#logout').onclick=()=>{S.user=null;save();location.hash='masuk';render()};
+  if(init)init();
+  if(id!==lastId)window.scrollTo(0,0);
+  lastId=id;
+}
+window.addEventListener('hashchange',render);
+render();
+</script>
+</body>
+</html>
